@@ -29,10 +29,10 @@ function getTransaction(string $fileName, ?callable $transcationHandler = null):
     $transactions = [];
 
     while(($transaction = fgetcsv($file)) !== false){
-        if($transcationHandler === null){
-            $transcation = $transcationHandler($transaction);
+        if($transcationHandler !== null){
+            $transaction = $transcationHandler($transaction);
         }
-        $transactions[] = extractTransaction($transaction);
+        $transactions[] = $transaction;
     }
 
     return $transactions;
@@ -49,4 +49,21 @@ function extractTransaction(array $transactionRow): array{
         'description' => $description,
         'amount' => $amount 
     ];
+}
+
+function calculateTotal(array $transactions): array
+{
+    $totals = ['netTotal' => 0, 'totalIncome' => 0, 'totalExpense' => 0];    
+
+    foreach ($transactions as $transaction) {
+        $totals['netTotal'] += $transaction['amount']; 
+
+        if($transaction['amount'] > 0){
+            $totals['totalIncome'] += $transaction['amount'];
+        } else {
+            $totals['totalExpense'] += $transaction['amount'];
+        }
+    }
+
+    return $totals;
 }

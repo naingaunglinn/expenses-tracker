@@ -9,13 +9,16 @@ define('FILES_PATH', $root . 'transaction_files' . DIRECTORY_SEPARATOR);
 define('VIEWS_PATH', $root . 'views' . DIRECTORY_SEPARATOR);
 
 require APP_PATH .'App.php';
+require APP_PATH .'Helper.php';
 
 $files = getTransactionFiles(FILES_PATH);
 
 $transactions = [];
 foreach ($files as $file) {
-    $transactions = array_merge($transactions, getTransaction($file));
+    $transactions = array_merge($transactions, getTransaction($file, 'extractTransaction'));
 }
+
+$totals = calculateTotal($transactions); 
 
 // echo "<pre>";
 // print_r($transactions);
